@@ -1,0 +1,14 @@
+[Unit]
+Description="x11vnc on sddm"
+Requires=display-manager.service
+After=display-manager.service
+
+[Service]
+ExecStartPre=/usr/bin/bash -c "/usr/bin/systemctl set-environment SDDMXAUTH=$(/usr/bin/find /var/run/sddm/ -type f)"
+ExecStart=/bin/bash -c "/usr/bin/x11vnc -xkb -noxrecord -dontdisconnect -repeat -loop -forever -noxdamage -display :0 -auth ${SDDMXAUTH} -rfbauth /etc/x11vnc.pass"
+ExecStop=/usr/bin/killall x11vnc
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=graphical.target
